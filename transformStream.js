@@ -1,16 +1,23 @@
-import { Transform } from 'stream';
+import { findIndex, cli_options, argv } from './cliTool.js';
+import { CustomError, errorHandler } from './errorHandler.js';
+import { selectCipherStream } from './cipherStreams/index.js';
 
-class TransformStream extends Transform {
-  _transform(chunk, encoding, callback) {
-    // if(encoding === 'utf8') {
-      console.log(encoding)
-      console.log('CHUNK', chunk)
-      // this.push(chunk.toUpperCase());
-      const resultString = chunk.toString().toUpperCase();
-      callback(null, resultString);
+let getCiphersStreams;
+try {
+  const configFlagIndex = findIndex(cli_options.config);
+  if (!configFlagIndex) {
+    throw new CustomError('Error: Config option is required');
   }
+  getCiphersStreams = () => {
+    const cipherIndex = configFlagIndex + 1;
+    if (!argv[cipherIndex]) {
+      throw new CustomError('Error: Config option is required');
+    }
+    const cipherString = argv[cipherIndex].split('-');
+    return cipherString.map((elem) => selectCipherStream(elem));
+  };
+} catch (err) {
+  errorHandler(err);
 }
 
-const transform_stream = new TransformStream();
-
-export default transform_stream;
+export default getCiphersStreams;
