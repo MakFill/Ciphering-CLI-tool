@@ -1,6 +1,5 @@
-import { findIndex, cli_options, argv } from './cliTool.js';
-import { CustomError, errorHandler } from './errorHandler.js';
-import { selectCipherStream } from './cipherStreams/index.js';
+import { findIndex, cli_options, argv, CustomError, errorHandler } from '../helpers/index.js';
+import { selectCipherStream } from '../cipherStreams/index.js';
 
 let getCiphersStreams;
 try {
@@ -20,4 +19,4 @@ try {
   errorHandler(err);
 }
 
-export default getCiphersStreams;
+export { getCiphersStreams };

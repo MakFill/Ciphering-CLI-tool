@@ -1,10 +1,17 @@
 import { existsSync, open, appendFile, close } from 'fs';
 import { Writable } from 'stream';
-import { findIndex, cli_options, stdout, stdin, argv } from './cliTool.js';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { CustomError, errorHandler } from './errorHandler.js';
-import input_stream from './inputStream.js';
+import {
+  findIndex,
+  cli_options,
+  stdout,
+  stdin,
+  argv,
+  CustomError,
+  errorHandler,
+} from '../helpers/index.js';
+import { input_stream } from './index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -51,7 +58,7 @@ try {
     if (!argv[outputFileIndex]) {
       throw new CustomError('Error: output file does not exist');
     }
-    const filePath = path.join(__dirname, argv[outputFileIndex]);
+    const filePath = path.join(__dirname, '../', argv[outputFileIndex]);
     const existFile = existsSync(filePath);
     if (existFile) {
       output_stream = new WriteStream(filePath);
@@ -65,4 +72,4 @@ try {
   errorHandler(err);
 }
 
-export default output_stream;
+export { output_stream };

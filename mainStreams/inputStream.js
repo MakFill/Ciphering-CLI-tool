@@ -1,9 +1,15 @@
 import { existsSync, open, read, close } from 'fs';
 import { Readable } from 'stream';
-import { findIndex, cli_options, stdin, argv } from './cliTool.js';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { CustomError, errorHandler } from './errorHandler.js';
+import {
+  findIndex,
+  cli_options,
+  stdin,
+  argv,
+  CustomError,
+  errorHandler,
+} from '../helpers/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -51,7 +57,7 @@ try {
     if (!argv[inputFileIndex]) {
       throw new CustomError('Error: input file does not exist');
     }
-    const filePath = path.join(__dirname, argv[inputFileIndex]);
+    const filePath = path.join(__dirname, '../', argv[inputFileIndex]);
     const existFile = existsSync(filePath);
     if (existFile) {
       input_stream = new ReadStream(filePath);
@@ -65,4 +71,4 @@ try {
   errorHandler(err);
 }
 
-export default input_stream;
+export { input_stream };

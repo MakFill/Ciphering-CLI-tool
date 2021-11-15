@@ -1,9 +1,6 @@
 import { pipeline } from 'stream';
-import { errorHandler } from './errorHandler.js';
-import input_stream from './inputStream.js';
-import output_stream from './outputStream.js';
-import getCiphersStreams from './transformStream.js';
-import { stdout } from './cliTool.js';
+import { stdout } from './helpers/index.js';
+import { input_stream, output_stream, getCiphersStreams } from './mainStreams/index.js';
 
 pipeline(input_stream, ...getCiphersStreams(), output_stream, (err) => {
   if (err) {
