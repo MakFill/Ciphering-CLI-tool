@@ -1,5 +1,5 @@
 import { AtbashStream, EncodeStream, DecodeStream } from './index.js';
-import { errorHandler, CustomError } from '../helpers/index.js';
+import { CustomError } from '../helpers/index.js';
 
 export function selectCipherStream(elem) {
   switch (elem) {
