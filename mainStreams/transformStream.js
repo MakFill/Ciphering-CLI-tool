@@ -13,7 +13,13 @@ try {
       throw new CustomError('Error: Config option is required');
     }
     const cipherString = argv[cipherIndex].split('-');
-    return cipherString.map((elem) => selectCipherStream(elem));
+    return cipherString.map((elem) => {
+      try {
+        selectCipherStream(elem);
+      } catch (err) {
+        errorHandler(err);
+      }
+    });
   };
 } catch (err) {
   errorHandler(err);
