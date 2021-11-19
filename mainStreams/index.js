@@ -1,3 +1,3 @@
-export { input_stream } from './inputStream.js';
-export { output_stream } from './outputStream.js';
-export { getCiphersStreams } from './transformStream.js';
+export { getInputStream } from './inputStream.js';
+export { getOutputStream } from './outputStream.js';
+export { getCipherStreams } from './transformStream.js';

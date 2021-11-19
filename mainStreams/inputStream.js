@@ -49,26 +49,27 @@ class ReadStream extends Readable {
   }
 }
 
-let input_stream;
-try {
-  const inputFlagIndex = findIndex(cli_options.input);
-  if (inputFlagIndex) {
-    const inputFileIndex = inputFlagIndex + 1;
-    if (!argv[inputFileIndex]) {
-      throw new CustomError('Error: input file does not exist');
-    }
-    const filePath = path.join(__dirname, '../', argv[inputFileIndex]);
-    const existFile = existsSync(filePath);
-    if (existFile) {
-      input_stream = new ReadStream(filePath);
+export function getInputStream() {
+  let inputStream;
+  try {
+    const inputFlagIndex = findIndex(cli_options.input);
+    if (inputFlagIndex) {
+      const inputFileIndex = inputFlagIndex + 1;
+      if (!argv[inputFileIndex]) {
+        throw new CustomError('Error: input file does not exist');
+      }
+      const filePath = path.join(__dirname, '../', argv[inputFileIndex]);
+      const existFile = existsSync(filePath);
+      if (existFile) {
+        inputStream = new ReadStream(filePath);
+      } else {
+        throw new CustomError('Error: input file does not exist');
+      }
     } else {
-      throw new CustomError('Error: input file does not exist');
+      inputStream = stdin;
     }
-  } else {
-    input_stream = stdin;
+    return inputStream;
+  } catch (err) {
+    errorHandler(err);
   }
-} catch (err) {
-  errorHandler(err);
 }
-
-export { input_stream };
