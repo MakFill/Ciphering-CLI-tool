@@ -5,8 +5,16 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
+    "@types/jest": "^27.0.2",
+    "babel-plugin-transform-import-meta": "^2.1.0",
+    "jest": "^27.3.1",
+    "stream-mock": "^2.0.5"
+  }
 }
