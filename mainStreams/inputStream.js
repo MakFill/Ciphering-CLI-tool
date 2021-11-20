@@ -1,4 +1,4 @@
-import { existsSync, open, read, close } from 'fs';
+import { existsSync, open, read, accessSync, constants } from 'fs';
 import { Readable } from 'stream';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -11,10 +11,9 @@ import {
   errorHandler,
 } from '../helpers/index.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-class ReadStream extends Readable {
+export class ReadStream extends Readable {
   constructor(filename) {
     super();
     this.filename = filename;
@@ -22,30 +21,15 @@ class ReadStream extends Readable {
   }
   _construct(callback) {
     open(this.filename, (err, fd) => {
-      if (err) {
-        callback(errorHandler(new CustomError('Input file access denied')));
-      } else {
-        this.fd = fd;
-        callback();
-      }
+      this.fd = fd;
+      callback();
     });
   }
   _read(n) {
     const buf = Buffer.alloc(n);
     read(this.fd, buf, 0, n, null, (err, bytesRead) => {
-      if (err) {
-        errorHandler(new CustomError('Input file access denied'));
-      } else {
-        this.push(bytesRead > 0 ? buf.slice(0, bytesRead) : null);
-      }
+      this.push(bytesRead > 0 ? buf.slice(0, bytesRead) : null);
     });
-  }
-  _destroy(err, callback) {
-    if (this.fd) {
-      close(this.fd, (er) => callback(er || err));
-    } else {
-      callback(err);
-    }
   }
 }
 
@@ -61,6 +45,11 @@ export function getInputStream() {
       const filePath = path.join(__dirname, '../', argv[inputFileIndex]);
       const existFile = existsSync(filePath);
       if (existFile) {
+        try {
+          accessSync(filePath, constants.R_OK);
+        } catch (err) {
+          throw new CustomError('Input file access denied');
+        }
         inputStream = new ReadStream(filePath);
       } else {
         throw new CustomError('Error: input file does not exist');
