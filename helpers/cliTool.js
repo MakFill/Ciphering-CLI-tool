@@ -1,6 +1,5 @@
 import { CustomError } from './errorHandler.js';
-
-export const { exit, stdin, stdout, stderr, argv } = process;
+import { argv } from './index.js';
 
 export const cli_options = {
   config: ['-c', '--config'],

@@ -9,40 +9,44 @@ import {
   CAESAR_SHIFT,
 } from './cipherVariables.js';
 
+export function implementDecode(chunk, type) {
+  let resultString = '';
+  const data = chunk.toString().split('');
+
+  data.forEach((letter) => {
+    let code = letter.charCodeAt();
+    let codeWithShift;
+    if (type === 'caesar') {
+      codeWithShift = code - CAESAR_SHIFT;
+    } else if (type === 'rot') {
+      codeWithShift = code - ROT_SHIFT;
+    }
+    if (code >= FIRST_LETTER_LOWER_CASE && code <= LAST_LETTER_LOWER_CASE) {
+      if (codeWithShift >= FIRST_LETTER_LOWER_CASE) {
+        code = codeWithShift;
+      } else {
+        code = codeWithShift + ALPHABET_LENGTH;
+      }
+    }
+    if (code >= FIRST_LETTER_UPPER_CASE && code <= LAST_LETTER_UPPER_CASE) {
+      if (codeWithShift >= FIRST_LETTER_UPPER_CASE) {
+        code = codeWithShift;
+      } else {
+        code = codeWithShift + ALPHABET_LENGTH;
+      }
+    }
+    resultString += String.fromCharCode(code);
+  });
+
+  return resultString;
+}
+
 export class DecodeStream extends Transform {
   constructor(type) {
     super();
     this.type = type;
   }
   _transform(chunk, encoding, callback) {
-    let resultString = '';
-    const data = chunk.toString().split('');
-
-    data.forEach((letter) => {
-      let code = letter.charCodeAt();
-      let codeWithShift;
-      if (this.type === 'caesar') {
-        codeWithShift = code - CAESAR_SHIFT;
-      } else if (this.type === 'rot') {
-        codeWithShift = code - ROT_SHIFT;
-      }
-      if (code >= FIRST_LETTER_LOWER_CASE && code <= LAST_LETTER_LOWER_CASE) {
-        if (codeWithShift >= FIRST_LETTER_LOWER_CASE) {
-          code = codeWithShift;
-        } else {
-          code = codeWithShift + ALPHABET_LENGTH;
-        }
-      }
-      if (code >= FIRST_LETTER_UPPER_CASE && code <= LAST_LETTER_UPPER_CASE) {
-        if (codeWithShift >= FIRST_LETTER_UPPER_CASE) {
-          code = codeWithShift;
-        } else {
-          code = codeWithShift + ALPHABET_LENGTH;
-        }
-      }
-      resultString += String.fromCharCode(code);
-    });
-
-    callback(null, resultString);
+    callback(null, implementDecode(chunk, this.type));
   }
 }
